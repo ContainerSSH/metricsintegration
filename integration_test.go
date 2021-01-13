@@ -3,7 +3,6 @@ package metricsintegration_test
 import (
 	"context"
 	"fmt"
-	"io"
 	"net"
 	"testing"
 
@@ -162,6 +161,9 @@ type dummyBackendHandler struct {
 	authResponse sshserver.AuthResponse
 }
 
+func (d *dummyBackendHandler) OnClose() {
+}
+
 func (d *dummyBackendHandler) OnReady() error {
 	return nil
 }
@@ -194,6 +196,16 @@ func (d *dummyBackendHandler) OnAuthPubKey(_ string, _ string) (
 	return d.authResponse, nil
 }
 
+func (d *dummyBackendHandler) OnAuthKeyboardInteractive(
+	_ string,
+	_ func(
+		instruction string,
+		questions sshserver.KeyboardInteractiveQuestions,
+	) (answers sshserver.KeyboardInteractiveAnswers, err error),
+) (response sshserver.AuthResponse, reason error) {
+	return d.authResponse, nil
+}
+
 func (d *dummyBackendHandler) OnHandshakeFailed(_ error) {
 
 }
@@ -216,15 +228,28 @@ func (d *dummyBackendHandler) OnUnsupportedChannel(_ uint64, _ string, _ []byte)
 func (d *dummyBackendHandler) OnSessionChannel(
 	_ uint64,
 	_ []byte,
+	session sshserver.SessionChannel,
 ) (channel sshserver.SessionChannelHandler, failureReason sshserver.ChannelRejection) {
-	return d, nil
+	return &dummySession{
+		session: session,
+	}, nil
 }
 
-func (d *dummyBackendHandler) OnUnsupportedChannelRequest(_ uint64, _ string, _ []byte) {
+type dummySession struct {
+	session sshserver.SessionChannel
+}
+
+func (d *dummySession) OnClose() {
+}
+
+func (d *dummySession) OnShutdown(_ context.Context) {
+}
+
+func (d *dummySession) OnUnsupportedChannelRequest(_ uint64, _ string, _ []byte) {
 
 }
 
-func (d *dummyBackendHandler) OnFailedDecodeChannelRequest(
+func (d *dummySession) OnFailedDecodeChannelRequest(
 	_ uint64,
 	_ string,
 	_ []byte,
@@ -233,11 +258,11 @@ func (d *dummyBackendHandler) OnFailedDecodeChannelRequest(
 
 }
 
-func (d *dummyBackendHandler) OnEnvRequest(_ uint64, _ string, _ string) error {
+func (d *dummySession) OnEnvRequest(_ uint64, _ string, _ string) error {
 	return fmt.Errorf("env not supported")
 }
 
-func (d *dummyBackendHandler) OnPtyRequest(
+func (d *dummySession) OnPtyRequest(
 	_ uint64,
 	_ string,
 	_ uint32,
@@ -249,62 +274,50 @@ func (d *dummyBackendHandler) OnPtyRequest(
 	return fmt.Errorf("PTY not supported")
 }
 
-func (d *dummyBackendHandler) OnExecRequest(
+func (d *dummySession) OnExecRequest(
 	_ uint64,
 	exec string,
-	_ io.Reader,
-	stdout io.Writer,
-	_ io.Writer,
-	exit func(exitStatus sshserver.ExitStatus),
 ) error {
 	go func() {
-		_, err := stdout.Write([]byte(fmt.Sprintf("Exec request received: %s", exec)))
+		_, err := d.session.Stdout().Write([]byte(fmt.Sprintf("Exec request received: %s", exec)))
 		if err != nil {
-			exit(2)
+			d.session.ExitStatus(2)
 		} else {
-			exit(0)
+			d.session.ExitStatus(0)
 		}
 	}()
 	return nil
 }
 
-func (d *dummyBackendHandler) OnShell(
+func (d *dummySession) OnShell(
 	_ uint64,
-	_ io.Reader,
-	_ io.Writer,
-	_ io.Writer,
-	_ func(exitStatus sshserver.ExitStatus),
 ) error {
 	return fmt.Errorf("shell not supported")
 }
 
-func (d *dummyBackendHandler) OnSubsystem(
+func (d *dummySession) OnSubsystem(
 	_ uint64,
 	subsystem string,
-	_ io.Reader,
-	stdout io.Writer,
-	_ io.Writer,
-	exit func(exitStatus sshserver.ExitStatus),
 ) error {
 	if subsystem != "sftp" {
 		return fmt.Errorf("subsystem not supported")
 	}
 	go func() {
-		_, err := stdout.Write([]byte(fmt.Sprintf("Subsystem request received: %s", subsystem)))
+		_, err := d.session.Stdout().Write([]byte(fmt.Sprintf("Subsystem request received: %s", subsystem)))
 		if err != nil {
-			exit(2)
+			d.session.ExitStatus(2)
 		} else {
-			exit(0)
+			d.session.ExitStatus(0)
 		}
 	}()
 	return nil
 }
 
-func (d *dummyBackendHandler) OnSignal(_ uint64, _ string) error {
+func (d *dummySession) OnSignal(_ uint64, _ string) error {
 	return fmt.Errorf("signal not supported")
 }
 
-func (d *dummyBackendHandler) OnWindow(
+func (d *dummySession) OnWindow(
 	_ uint64,
 	_ uint32,
 	_ uint32,

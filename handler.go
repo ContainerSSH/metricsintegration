@@ -56,6 +56,10 @@ type metricsNetworkHandler struct {
 	disconnected bool
 }
 
+func (m *metricsNetworkHandler) OnShutdown(shutdownContext context.Context) {
+	m.backend.OnShutdown(shutdownContext)
+}
+
 func (m *metricsNetworkHandler) OnAuthPassword(username string, password []byte) (
 	response sshserver.AuthResponse,
 	reason error,
@@ -79,6 +83,26 @@ func (m *metricsNetworkHandler) OnAuthPubKey(username string, pubKey string) (
 ) {
 	label := metrics.Label("authtype", "pubkey")
 	response, reason = m.backend.OnAuthPubKey(username, pubKey)
+	switch response {
+	case sshserver.AuthResponseSuccess:
+		m.handler.authSuccessMetric.Increment(m.client.IP, label)
+	case sshserver.AuthResponseFailure:
+		m.handler.authFailureMetric.Increment(m.client.IP, label)
+	case sshserver.AuthResponseUnavailable:
+		m.handler.authBackendFailureMetric.Increment(label)
+	}
+	return response, reason
+}
+
+func (m *metricsNetworkHandler) OnAuthKeyboardInteractive(
+	user string,
+	challenge func(
+		instruction string,
+		questions sshserver.KeyboardInteractiveQuestions,
+	) (answers sshserver.KeyboardInteractiveAnswers, err error),
+) (response sshserver.AuthResponse, reason error) {
+	label := metrics.Label("authtype", "keyboard-interactive")
+	response, reason = m.backend.OnAuthKeyboardInteractive(user, challenge)
 	switch response {
 	case sshserver.AuthResponseSuccess:
 		m.handler.authSuccessMetric.Increment(m.client.IP, label)
