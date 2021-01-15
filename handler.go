@@ -139,4 +139,5 @@ func (m *metricsNetworkHandler) OnDisconnect() {
 		m.handler.currentConnectionsMetric.Decrement(m.client.IP)
 		m.disconnected = true
 	}
+	m.backend.OnDisconnect()
 }
