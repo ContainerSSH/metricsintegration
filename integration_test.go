@@ -76,9 +76,6 @@ func testAuthSuccessful(
 	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameSuccessfulHandshake)[0].Value)
 	assert.Equal(t, 0, len(metricsCollector.GetMetric(metricsintegration.MetricNameFailedHandshake)))
 	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameCurrentConnections)[0].Value)
-	assert.Equal(t, 0, len(metricsCollector.GetMetric(metricsintegration.MetricNameAuthBackendFailure)))
-	assert.Equal(t, 0, len(metricsCollector.GetMetric(metricsintegration.MetricNameAuthFailure)))
-	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameAuthSuccess)[0].Value)
 
 	networkHandler.OnDisconnect()
 	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameConnections)[0].Value)
@@ -111,9 +108,6 @@ func testAuthFailed(
 	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameSuccessfulHandshake)[0].Value)
 	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameFailedHandshake)[0].Value)
 	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameCurrentConnections)[0].Value)
-	assert.Equal(t, 0, len(metricsCollector.GetMetric(metricsintegration.MetricNameAuthBackendFailure)))
-	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameAuthFailure)[0].Value)
-	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameAuthSuccess)[0].Value)
 
 	networkHandler.OnDisconnect()
 	assert.Equal(t, float64(2), metricsCollector.GetMetric(metricsintegration.MetricNameConnections)[0].Value)
@@ -148,9 +142,6 @@ func testAuthUnavailable(
 	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameCurrentConnections)[0].Value)
 	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameSuccessfulHandshake)[0].Value)
 	assert.Equal(t, float64(2), metricsCollector.GetMetric(metricsintegration.MetricNameFailedHandshake)[0].Value)
-	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameAuthBackendFailure)[0].Value)
-	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameAuthFailure)[0].Value)
-	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameAuthSuccess)[0].Value)
 
 	networkHandler.OnDisconnect()
 	assert.Equal(t, float64(3), metricsCollector.GetMetric(metricsintegration.MetricNameConnections)[0].Value)

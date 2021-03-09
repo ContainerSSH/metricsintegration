@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.3: Removing auth handlers
+
+This release is removing the auth handlers as they have been moved to the auth library directly.
+
 ## 0.9.2: Passing OnDisconnect
 
 This release fixes a bug where the OnDisconnect call wasn't passed to the backend.

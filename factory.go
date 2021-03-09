@@ -25,22 +25,6 @@ func NewHandler(
 		MetricHelpCurrentConnections,
 	)
 
-	authSuccessMetric := metricsCollector.MustCreateCounterGeo(
-		MetricNameAuthSuccess,
-		"attempts",
-		MetricHelpAuthSuccess,
-	)
-	authFailureMetric := metricsCollector.MustCreateCounterGeo(
-		MetricNameAuthFailure,
-		"attempts",
-		MetricHelpAuthFailure,
-	)
-	authBackendFailureMetric := metricsCollector.MustCreateCounter(
-		MetricNameAuthBackendFailure,
-		"attempts",
-		MetricHelpAuthBackendFailure,
-	)
-
 	handshakeSuccessfulMetric := metricsCollector.MustCreateCounterGeo(
 		MetricNameSuccessfulHandshake,
 		"handshakes",
@@ -59,8 +43,5 @@ func NewHandler(
 		handshakeSuccessfulMetric: handshakeSuccessfulMetric,
 		handshakeFailedMetric:     handshakeFailedMetric,
 		currentConnectionsMetric:  currentConnectionsMetric,
-		authBackendFailureMetric:  authBackendFailureMetric,
-		authSuccessMetric:         authSuccessMetric,
-		authFailureMetric:         authFailureMetric,
 	}, nil
 }
