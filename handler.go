@@ -16,9 +16,6 @@ type metricsHandler struct {
 	handshakeSuccessfulMetric metrics.SimpleGeoCounter
 	handshakeFailedMetric     metrics.SimpleGeoCounter
 	currentConnectionsMetric  metrics.SimpleGeoGauge
-	authBackendFailureMetric  metrics.SimpleCounter
-	authFailureMetric         metrics.SimpleGeoCounter
-	authSuccessMetric         metrics.SimpleGeoCounter
 }
 
 func (m *metricsHandler) OnReady() error {
