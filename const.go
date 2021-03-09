@@ -23,21 +23,3 @@ const MetricNameFailedHandshake = "containerssh_ssh_handshake_failed"
 
 // MetricHelpFailedHandshake is the help text for the number of failed SSH handshakes since start.
 const MetricHelpFailedHandshake = "Failed SSH handshakes since start"
-
-// MetricNameAuthBackendFailure is the number of request failures to the authentication backend.
-const MetricNameAuthBackendFailure = "containerssh_auth_server_failures"
-
-// MetricHelpAuthBackendFailure is the help text for the number of request failures to the authentication backend.
-const MetricHelpAuthBackendFailure = "Number of request failures to the authentication backend"
-
-// MetricNameAuthFailure is the number of failed authentications.
-const MetricNameAuthFailure = "containerssh_auth_failures"
-
-// MetricHelpAuthFailure is the help text for the number of failed authentications.
-const MetricHelpAuthFailure = "Number of failed authentications"
-
-// MetricNameAuthSuccess is the number of successful authentications.
-const MetricNameAuthSuccess = "containerssh_auth_success"
-
-// MetricHelpAuthSuccess is the help text for the number of successful authentications.
-const MetricHelpAuthSuccess = "Number of successful authentications"

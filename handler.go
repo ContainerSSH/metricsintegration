@@ -16,9 +16,6 @@ type metricsHandler struct {
 	handshakeSuccessfulMetric metrics.SimpleGeoCounter
 	handshakeFailedMetric     metrics.SimpleGeoCounter
 	currentConnectionsMetric  metrics.SimpleGeoGauge
-	authBackendFailureMetric  metrics.SimpleCounter
-	authFailureMetric         metrics.SimpleGeoCounter
-	authSuccessMetric         metrics.SimpleGeoCounter
 }
 
 func (m *metricsHandler) OnReady() error {
@@ -64,34 +61,14 @@ func (m *metricsNetworkHandler) OnAuthPassword(username string, password []byte)
 	response sshserver.AuthResponse,
 	reason error,
 ) {
-	label := metrics.Label("authtype", "password")
-	response, reason = m.backend.OnAuthPassword(username, password)
-	switch response {
-	case sshserver.AuthResponseSuccess:
-		m.handler.authSuccessMetric.Increment(m.client.IP, label)
-	case sshserver.AuthResponseFailure:
-		m.handler.authFailureMetric.Increment(m.client.IP, label)
-	case sshserver.AuthResponseUnavailable:
-		m.handler.authBackendFailureMetric.Increment(label)
-	}
-	return response, reason
+	return m.backend.OnAuthPassword(username, password)
 }
 
 func (m *metricsNetworkHandler) OnAuthPubKey(username string, pubKey string) (
 	response sshserver.AuthResponse,
 	reason error,
 ) {
-	label := metrics.Label("authtype", "pubkey")
-	response, reason = m.backend.OnAuthPubKey(username, pubKey)
-	switch response {
-	case sshserver.AuthResponseSuccess:
-		m.handler.authSuccessMetric.Increment(m.client.IP, label)
-	case sshserver.AuthResponseFailure:
-		m.handler.authFailureMetric.Increment(m.client.IP, label)
-	case sshserver.AuthResponseUnavailable:
-		m.handler.authBackendFailureMetric.Increment(label)
-	}
-	return response, reason
+	return m.backend.OnAuthPubKey(username, pubKey)
 }
 
 func (m *metricsNetworkHandler) OnAuthKeyboardInteractive(
@@ -101,17 +78,7 @@ func (m *metricsNetworkHandler) OnAuthKeyboardInteractive(
 		questions sshserver.KeyboardInteractiveQuestions,
 	) (answers sshserver.KeyboardInteractiveAnswers, err error),
 ) (response sshserver.AuthResponse, reason error) {
-	label := metrics.Label("authtype", "keyboard-interactive")
-	response, reason = m.backend.OnAuthKeyboardInteractive(user, challenge)
-	switch response {
-	case sshserver.AuthResponseSuccess:
-		m.handler.authSuccessMetric.Increment(m.client.IP, label)
-	case sshserver.AuthResponseFailure:
-		m.handler.authFailureMetric.Increment(m.client.IP, label)
-	case sshserver.AuthResponseUnavailable:
-		m.handler.authBackendFailureMetric.Increment(label)
-	}
-	return response, reason
+	return m.backend.OnAuthKeyboardInteractive(user, challenge)
 }
 
 func (m *metricsNetworkHandler) OnHandshakeFailed(reason error) {

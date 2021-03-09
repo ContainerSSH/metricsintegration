@@ -40,10 +40,6 @@ func TestMetricsReporting(t *testing.T) {
 	t.Run("auth=failed", func(t *testing.T) {
 		testAuthFailed(t, backend, handler, metricsCollector)
 	})
-
-	t.Run("auth=unavailable", func(t *testing.T) {
-		testAuthUnavailable(t, backend, handler, metricsCollector)
-	})
 }
 
 func testAuthSuccessful(
@@ -76,9 +72,6 @@ func testAuthSuccessful(
 	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameSuccessfulHandshake)[0].Value)
 	assert.Equal(t, 0, len(metricsCollector.GetMetric(metricsintegration.MetricNameFailedHandshake)))
 	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameCurrentConnections)[0].Value)
-	assert.Equal(t, 0, len(metricsCollector.GetMetric(metricsintegration.MetricNameAuthBackendFailure)))
-	assert.Equal(t, 0, len(metricsCollector.GetMetric(metricsintegration.MetricNameAuthFailure)))
-	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameAuthSuccess)[0].Value)
 
 	networkHandler.OnDisconnect()
 	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameConnections)[0].Value)
@@ -111,49 +104,9 @@ func testAuthFailed(
 	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameSuccessfulHandshake)[0].Value)
 	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameFailedHandshake)[0].Value)
 	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameCurrentConnections)[0].Value)
-	assert.Equal(t, 0, len(metricsCollector.GetMetric(metricsintegration.MetricNameAuthBackendFailure)))
-	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameAuthFailure)[0].Value)
-	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameAuthSuccess)[0].Value)
 
 	networkHandler.OnDisconnect()
 	assert.Equal(t, float64(2), metricsCollector.GetMetric(metricsintegration.MetricNameConnections)[0].Value)
-	assert.Equal(t, float64(0), metricsCollector.GetMetric(metricsintegration.MetricNameCurrentConnections)[0].Value)
-}
-
-func testAuthUnavailable(
-	t *testing.T,
-	backend *dummyBackendHandler,
-	handler sshserver.Handler,
-	metricsCollector metrics.Collector,
-) {
-	assert.Equal(t, float64(2), metricsCollector.GetMetric(metricsintegration.MetricNameConnections)[0].Value)
-	assert.Equal(t, float64(0), metricsCollector.GetMetric(metricsintegration.MetricNameCurrentConnections)[0].Value)
-
-	backend.authResponse = sshserver.AuthResponseUnavailable
-	networkHandler, err := handler.OnNetworkConnection(
-		net.TCPAddr{
-			IP:   net.ParseIP("127.0.0.1"),
-			Port: 2222,
-		},
-		sshserver.GenerateConnectionID(),
-	)
-	assert.NoError(t, err)
-	response, err := networkHandler.OnAuthPassword("foo", []byte("bar"))
-	assert.NoError(t, err)
-	assert.Equal(t, sshserver.AuthResponseUnavailable, response)
-
-	networkHandler.OnHandshakeFailed(fmt.Errorf("auth unavailable"))
-
-	assert.Equal(t, float64(3), metricsCollector.GetMetric(metricsintegration.MetricNameConnections)[0].Value)
-	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameCurrentConnections)[0].Value)
-	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameSuccessfulHandshake)[0].Value)
-	assert.Equal(t, float64(2), metricsCollector.GetMetric(metricsintegration.MetricNameFailedHandshake)[0].Value)
-	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameAuthBackendFailure)[0].Value)
-	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameAuthFailure)[0].Value)
-	assert.Equal(t, float64(1), metricsCollector.GetMetric(metricsintegration.MetricNameAuthSuccess)[0].Value)
-
-	networkHandler.OnDisconnect()
-	assert.Equal(t, float64(3), metricsCollector.GetMetric(metricsintegration.MetricNameConnections)[0].Value)
 	assert.Equal(t, float64(0), metricsCollector.GetMetric(metricsintegration.MetricNameCurrentConnections)[0].Value)
 }
 
