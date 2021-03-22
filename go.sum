@@ -12,6 +12,8 @@ github.com/containerssh/service v0.9.3 h1:mYpvZ9zxUrKL8OpBen86heXfGtdUGdtfZ3Y7P6
 github.com/containerssh/service v0.9.3/go.mod h1:Yeq3hwfM6js9TfpkrQAQhv5IRfurrGEkM+AbFEC9KCE=
 github.com/containerssh/sshserver v0.9.19 h1:QSpREx9owneSvJPpKe/MDy4DP7zoYfKFemHYD6qaQgY=
 github.com/containerssh/sshserver v0.9.19/go.mod h1:NA4hs/2nZB9RX5TS4jniYdO08lfXxBFHvRxV/Pf4bW4=
+github.com/containerssh/sshserver v0.9.20 h1:30ggFd7UiHaoBP7m/6FF0EZk6a8CuBqROdE6DQZ6QMk=
+github.com/containerssh/sshserver v0.9.20/go.mod h1:yQRp6CLwz3pX/bDDv/bKSF+3SkwTae4+8OaAPVZABRI=
 github.com/containerssh/structutils v0.9.0 h1:pz4xl5ZrPnpdSx7B/ru8Fj3oU3vOtx1jprIuSkm5s7o=
 github.com/containerssh/structutils v0.9.0/go.mod h1:zirdwNXan3kuTpsJp9Gl3W6VQz0fexqMySqxmfviSjw=
 github.com/containerssh/unixutils v0.9.0 h1:9Bh2UiQW6DIuVW6upc1uUU38tKK1IUn2hxZqi9w3cQc=
@@ -56,6 +58,8 @@ golang.org/x/sys v0.0.0-20191224085550-c709ea063b76/go.mod h1:h1NjWce9XRLGQEsW7w
 golang.org/x/sys v0.0.0-20210113181707-4bcb84eeeb78/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20210309074719-68d13333faf2 h1:46ULzRKLh1CwgRq2dC5SlBzEqqNCi8rreOZnNrbqcIY=
 golang.org/x/sys v0.0.0-20210309074719-68d13333faf2/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20210320140829-1e4c9ba3b0c4 h1:EZ2mChiOa8udjfp6rRmswTbtZN/QzUQp4ptM4rnjHvc=
+golang.org/x/sys v0.0.0-20210320140829-1e4c9ba3b0c4/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/term v0.0.0-20201117132131-f5c789dd3221 h1:/ZHdbVpdR/jk3g30/d4yUL0JU9kksj8+F/bnQUVLGDM=
 golang.org/x/term v0.0.0-20201117132131-f5c789dd3221/go.mod h1:Nr5EML6q2oocZ2LXRh80K7BxOlk5/8JxuGnuhpl+muw=
 golang.org/x/text v0.3.3/go.mod h1:5Zoc/QRtKVWzQhOtBMvqHzDpF6irO9z98xDceosuGiQ=
