@@ -5,12 +5,9 @@ go 1.14
 require (
 	github.com/containerssh/geoip v0.9.4
 	github.com/containerssh/metrics v0.9.8
-	github.com/containerssh/sshserver v0.9.20
-	github.com/imdario/mergo v0.3.12 // indirect
-	github.com/mattn/go-shellwords v1.0.11 // indirect
+	github.com/containerssh/sshserver v0.9.25
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83 // indirect
-	golang.org/x/sys v0.0.0-20210320140829-1e4c9ba3b0c4 // indirect
 )
 
 // Fixes CVE-2020-9283
