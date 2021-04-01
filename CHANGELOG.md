@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.0: First stable release
+
+This release tags the first stable version for ContainerSSH 0.4.0.
+
 ## 0.9.3: Removing auth handlers
 
 This release is removing the auth handlers as they have been moved to the auth library directly.
